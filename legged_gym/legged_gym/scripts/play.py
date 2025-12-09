@@ -33,7 +33,7 @@ import os
 
 import isaacgym
 from legged_gym.envs import *
-from legged_gym.utils import  get_args, export_policy_as_jit, task_registry, Logger
+from legged_gym.utils import  get_args, export_policy_as_jit, task_registry, Logger,export_policy_as_onnx
 
 import numpy as np
 import torch
@@ -56,7 +56,7 @@ def play(args):
     #critic_obs = env.get_privileged_observations()
     # load policy
     train_cfg.runner.resume = True
-    path = '/home/asuka/xsph-Dog-main/legged_gym/logs/rough_a1/Dec08_15-35-56_/model_3000.pt'
+    path = '/home/asuka/xsph-Dog-main/legged_gym/logs/rough_a1/Dec08_15-35-56_/model_1000.pt'
     #ppo_runner, train_cfg = task_registry.make_alg_runner(env=env, name=args.task, args=args, train_cfg=train_cfg)
     ppo_runner, train_cfg = task_registry.make_alg_runner(env=env, name=args.task, args=args, train_cfg=train_cfg,train_path=path)
     policy = ppo_runner.get_inference_policy(device=env.device)
@@ -64,7 +64,8 @@ def play(args):
     # export policy as a jit module (used to run it from C++)
     if EXPORT_POLICY:
         path = os.path.join(LEGGED_GYM_ROOT_DIR, 'logs', train_cfg.runner.experiment_name, 'exported', 'policies')
-        export_policy_as_jit(ppo_runner.alg.actor_critic, path)
+        # export_policy_as_jit(ppo_runner.alg.actor_critic, path)
+        export_policy_as_onnx(ppo_runner.alg.actor_critic)
         print('Exported policy as jit script to: ', path)
 
     logger = Logger(env.dt)
@@ -78,6 +79,9 @@ def play(args):
     img_idx = 0
 
     for i in range(10*int(env.max_episode_length)):
+        # env.commands[:, 0] = 0.3 # x方向线速度
+        # env.commands[:, 1] = 0.0  # y方向线速度
+        # env.commands[:, 2] = 0.0  # yaw角速度
         forward_out = ppo_runner.alg.linear_velocity_prediction.forward_vel_pred(obs.detach())
         #actions = policy(obs.detach())
         actions = policy(torch.cat((obs.detach(), forward_out), dim=-1))

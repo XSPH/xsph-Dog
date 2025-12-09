@@ -189,6 +189,21 @@ def export_policy_as_jit(actor_critic, path):
         traced_script_module = torch.jit.script(model)
         traced_script_module.save(path)
 
+def export_policy_as_onnx(actor_critic):
+    model = copy.deepcopy(actor_critic.actor).to('cpu')
+    actor_input = torch.randn(1, 48)  # 根据实际情况调整形状
+
+    body_onnx_path = '/home/asuka/xsph-Dog-main/legged_gym/onnx/' + 'legged.onnx'
+    paths = [body_onnx_path]
+    for path in paths:
+        if os.path.exists(path):
+            os.remove(path)
+            print(f"已删除: {path}")
+        else:
+            print(f"文件不存在: {path}")
+    print("path:",body_onnx_path)
+    torch.onnx.export(model, actor_input, body_onnx_path, opset_version=11)
+
 
 class PolicyExporterLSTM(torch.nn.Module):
     def __init__(self, actor_critic):

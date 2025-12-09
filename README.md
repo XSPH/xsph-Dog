@@ -167,7 +167,7 @@ logs/<experiment_name>/<date_time>_<run_name>/
 - 该项目需要 NVIDIA Isaac Gym，仅支持 NVIDIA GPU
 - 训练时建议按 'v' 键停止渲染以提高性能
 - 项目已迁移到 Isaac Lab 框架，此仓库将有限更新
-- 联系方式：rudinn@ethz.ch
+- 联系方式：xsph2005@gmail.com
 
 ## 相关资源
 
