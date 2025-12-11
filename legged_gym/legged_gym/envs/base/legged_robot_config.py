@@ -68,7 +68,7 @@ class LeggedRobotCfg(BaseConfig):
     class commands:
         curriculum = False
         max_curriculum = 1.
-        num_commands = 3 # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 4 # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10. # time before command are changed[s]
         heading_command = True # if true: compute ang vel command from heading error
         class ranges:
@@ -156,28 +156,27 @@ class LeggedRobotCfg(BaseConfig):
     class rewards:
         class scales:
             termination = -0.0
-            tracking_lin_vel = 1.0
+            tracking_lin_vel = 1.
             tracking_ang_vel = 0.5
             lin_vel_z = -2.0
-            ang_vel_xy = -0.05
-            orientation = -0.5
-            torques = -0.00001
+            ang_vel_xy = -0.07
+            orientation = -1
+            torques = -0.000001 
             dof_vel = -0.
             dof_acc = -2.5e-7
             base_height = -20.
             feet_air_time =  1.0
-            collision = -1.
+            collision = -5.
             feet_stumble = -0.0 
             action_rate = -0.01
-            stand_still = -1.
-            # body_tilt = -10.0
-            # angular_velocity = -2.0
+            stand_still = -0.8
+
 
         only_positive_rewards = False # if true negative total rewards are clipped at zero (avoids early termination problems)
         tracking_sigma = 0.25 # tracking reward = exp(-error^2/sigma)
         soft_dof_pos_limit = 0.8 # percentage of urdf limits, values above this limit are penalized
         soft_dof_vel_limit = 0.8
-        soft_torque_limit = 0.9
+        soft_torque_limit = 0.8
         base_height_target = 1.
         max_contact_force = 100. # forces above this value are penalized
 

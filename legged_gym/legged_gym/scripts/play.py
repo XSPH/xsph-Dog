@@ -56,7 +56,7 @@ def play(args):
     #critic_obs = env.get_privileged_observations()
     # load policy
     train_cfg.runner.resume = True
-    path = '/home/asuka/xsph-Dog-main/legged_gym/logs/rough_a1/Dec08_15-35-56_/model_1000.pt'
+    path = '/home/asuka/xsph-Dog-main/legged_gym/logs/rough_a1/Dec11_15-57-23_/model_2000.pt'
     #ppo_runner, train_cfg = task_registry.make_alg_runner(env=env, name=args.task, args=args, train_cfg=train_cfg)
     ppo_runner, train_cfg = task_registry.make_alg_runner(env=env, name=args.task, args=args, train_cfg=train_cfg,train_path=path)
     policy = ppo_runner.get_inference_policy(device=env.device)
@@ -79,9 +79,10 @@ def play(args):
     img_idx = 0
 
     for i in range(10*int(env.max_episode_length)):
-        # env.commands[:, 0] = 0.3 # x方向线速度
-        # env.commands[:, 1] = 0.0  # y方向线速度
-        # env.commands[:, 2] = 0.0  # yaw角速度
+        env.commands[:, 0] = 0.2
+        env.commands[:, 1] = 0.0
+        env.commands[:, 2] = 0.0
+        env.commands[:, 3] = 0.0
         forward_out = ppo_runner.alg.linear_velocity_prediction.forward_vel_pred(obs.detach())
         #actions = policy(obs.detach())
         actions = policy(torch.cat((obs.detach(), forward_out), dim=-1))

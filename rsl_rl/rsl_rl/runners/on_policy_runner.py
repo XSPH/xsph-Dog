@@ -55,14 +55,9 @@ class OnPolicyRunner:
         linear_velocity_prediction_class = eval(self.cfg["pred_class_name"]) # LinearVelocityPrediction
         linear_velocity_prediction : LinearVelocityPrediction = linear_velocity_prediction_class(
             **self.pred_cfg,).to(self.device)
-        # print("!!!!",self.pred_cfg)
-        # if self.env.num_privileged_obs is not None:
-        #     num_critic_obs = self.env.num_privileged_obs 
-        # else:
+
         num_critic_obs = self.env.num_privileged_obs #+ self.env.num_commands #+ linear_velocity_prediction.lin_output_dim
-        # print("num_critic_obs:!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", num_critic_obs)#48
-        # print("num_actor_obs:", self.env.num_obs)#45
-        # print("num_actions:", self.env.num_actions)#12
+
         actor_critic_class = eval(self.cfg["policy_class_name"]) # ActorCritic
         actor_critic: ActorCritic = actor_critic_class( 
             self.env.num_obs  
@@ -104,14 +99,10 @@ class OnPolicyRunner:
             self.writer = SummaryWriter(log_dir=self.log_dir, flush_secs=10)
         if init_at_random_ep_len:
             self.env.episode_length_buf = torch.randint_like(self.env.episode_length_buf, high=int(self.env.max_episode_length))
+
         obs = self.env.get_observations()
-        # print("critic_obs shape@@@@@@:", critic_obs.shape)
-        # print("obs shape:", obs.shape)
-        
         critic_obs = self.env.get_privileged_observations()
-        # print("privileged_obs shape:",privileged_obs.shape)
-        # critic_obs = privileged_obs if privileged_obs is not None else obs
-        # privileged_obs = critic_obs
+        
         obs, critic_obs  = (
             obs.to(self.device), 
             critic_obs.to(self.device))

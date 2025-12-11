@@ -70,10 +70,12 @@ class PPO:
         self.actor_critic = actor_critic
         self.actor_critic.to(self.device)
         self.storage = None # initialized later
-        self.optimizer = optim.Adam(self.actor_critic.parameters(), lr=learning_rate)
+        self.optimizer = optim.Adam(self.actor_critic.parameters(), 
+                                    lr=learning_rate)
 
         if self.linear_velocity_prediction.lin_input_dim != 0:
-            self.extra_optimizer = optim.Adam(self.linear_velocity_prediction.parameters(), lr=est_learning_rate)
+            self.extra_optimizer = optim.Adam(self.linear_velocity_prediction.parameters(),
+                                              lr=est_learning_rate)
         else:
             self.extra_optimizer = None
 
@@ -171,11 +173,7 @@ class PPO:
             masks_batch 
             )in generator:
                 forward_out = self.linear_velocity_prediction.forward_vel_pred(obs_batch)
-                # print("obs_batch_shap@#@#@#@",obs_batch.shape)
-                # print("forward_out_shape$$$$$$$",forward_out.shape)
-                # print("cat_shape%%%%%%%%%%%",torch.cat((obs_batch, forward_out), dim=-1).shape)
                 self.actor_critic.act(torch.cat((obs_batch, forward_out), dim=-1), masks=masks_batch, hidden_states=hid_states_batch[0])
-                # self.actor_critic.act(obs_batch, masks=masks_batch, hidden_states=hid_states_batch[0]) # TODO: check
                 actions_log_prob_batch = self.actor_critic.get_actions_log_prob(actions_batch)
                 value_batch = self.actor_critic.evaluate(critic_obs_batch, masks=masks_batch, hidden_states=hid_states_batch[1])
                 mu_batch = self.actor_critic.action_mean
@@ -238,7 +236,7 @@ class PPO:
                 obs_batch,
                 critic_obs_batch,
             ) in generator:
-                # Assuming the target velocity is the first 3 elements of the critic observations
+                # 假设目标速度是批评观察的前 3 个元素
                 target_velocities = critic_obs_batch[:, :3]
                 
                 # 前向传播得到预测的线速度
