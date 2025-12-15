@@ -38,6 +38,7 @@ from .anymal_b.anymal_b_config import AnymalBRoughCfg, AnymalBRoughCfgPPO
 from .cassie.cassie import Cassie
 from .cassie.cassie_config import CassieRoughCfg, CassieRoughCfgPPO
 from .a1.a1_config import A1RoughCfg, A1RoughCfgPPO
+from .toe_dog3.toe_dog3_config import TOE_Dog3RoughCfg, TOE_Dog3RoughCfgPPO
 
 
 import os

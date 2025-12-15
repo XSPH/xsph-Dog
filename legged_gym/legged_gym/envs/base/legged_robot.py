@@ -989,20 +989,13 @@ class LeggedRobot(BaseTask):
         # penalize high contact forces
         return torch.sum((torch.norm(self.contact_forces[:, self.feet_indices, :], dim=-1) -  self.cfg.rewards.max_contact_force).clip(min=0.), dim=1)
 
-    # def _reward_body_tilt(self):
-    #     # 惩罚身体过度倾斜以防止跌倒
-    #     # 根据投影重力计算俯仰角和滚动角
-    #     # 当机器人直立时，projected_gravity 应为 [0, 0, -1]
-    #     # x 和 y 的偏差表示倾斜
-    #     tilt_magnitude = torch.sqrt(torch.sum(self.projected_gravity[:, :2]**2, dim=1))
-    #     # 当倾斜超过 30 度时应用惩罚（sin(30°) ≈ 0.5）
-    #     excessive_tilt = torch.clamp(tilt_magnitude - 0.5, min=0.)
-    #     return excessive_tilt
+    def _reward_trot_gait(self):
 
-    # def _reward_angular_velocity(self):
-    #     # Penalize excessive angular velocity to prevent tumbling
-    #     # High angular velocities often precede falls
-    #     ang_vel_magnitude = torch.norm(self.base_ang_vel, dim=1)
-    #     # Apply penalty when angular velocity exceeds 2 rad/s
-    #     excessive_ang_vel = torch.clamp(ang_vel_magnitude - 2.0, min=0.)
-    #     return excessive_ang_vel
+        return torch.sum(torch.square(self.dof_pos[:,[1,2]] - self.dof_pos[:,[10,11]])+
+                         torch.square(self.dof_pos[:,[4,5]] - self.dof_pos[:,[7,8]]), dim=-1)
+    def _reward_feet_stumble(self):
+        # Penalize feet hitting vertical surfaces
+        stumble = (torch.norm(self.contact_forces[:, self.feet_indices, :2], dim=2) > 2.)*\
+                  (torch.abs(self.contact_forces[:, self.feet_indices, 2]) < 1.)
+        # print("stumble:",stumble)
+        return torch.sum(stumble, dim=1)
