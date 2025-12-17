@@ -52,7 +52,7 @@ class Sim2simCfg(A1RoughCfg):
     class sim_config:
         # print("{LEGGED_GYM_ROOT_DIR}",{LEGGED_GYM_ROOT_DIR})
 
-        mujoco_model_path = '/home/asuka/xsph-Dog-main/legged_gym/resources/robots/a1/xml/scene.xml'
+        mujoco_model_path = '/home/asuka/xsph-Dog-main/legged_gym/resources/robots/TOE_dog3/xml/scene.xml'
         
         sim_duration = 60.0
         dt = 0.005 #1Khz底层
@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
     hist_obs = deque()
     for _ in range(15):
-        hist_obs.append(np.zeros([1,45], dtype=np.double))
+        hist_obs.append(np.zeros([1,48], dtype=np.double))
     count_lowlevel = 0
 
     for _ in tqdm(range(int(Sim2simCfg.sim_config.sim_duration*10/ Sim2simCfg.sim_config.dt)), desc="Simulating..."):
@@ -101,7 +101,7 @@ if __name__ == '__main__':
             # 1000hz ->50hz
             if count_lowlevel % Sim2simCfg.sim_config.decimation == 0:
 
-                obs = np.zeros([1, 45], dtype=np.float32) #1,45           
+                obs = np.zeros([1, 48], dtype=np.float32) #1,45           
                 gravity_vec =  np.array([0., 0., -1.], dtype=np.float32)
                 proj_gravity = quat_rotate_inverse(quat,gravity_vec)
                 obs[0, 0] = omega[0] *Sim2simCfg.normalization.obs_scales.ang_vel
@@ -118,7 +118,7 @@ if __name__ == '__main__':
                 obs[0, 33:45] = last_actions#上次控制指令
                 obs = np.clip(obs, -Sim2simCfg.normalization.clip_observations, Sim2simCfg.normalization.clip_observations)
 
-                n_proprio=45
+                n_proprio=48
                 history_len=15
                 num_z_encoder = 32
 

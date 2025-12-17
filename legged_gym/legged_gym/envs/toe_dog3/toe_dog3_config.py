@@ -46,13 +46,9 @@ class TOE_Dog3RoughCfg(LeggedRobotCfg):
         base_height_target = 0.30
 
 
-
-
 class TOE_Dog3RoughCfgPPO(LeggedRobotCfgPPO):
     class algorithm(LeggedRobotCfgPPO.algorithm):
         entropy_coef = 0.01
-
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ''
-
         experiment_name = 'TOE_dog3'

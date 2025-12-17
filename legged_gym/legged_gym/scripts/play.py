@@ -58,7 +58,7 @@ def play(args):
     # critic_obs = env.get_privileged_observations()
     # load policy
     train_cfg.runner.resume = True
-    path = '/home/asuka/xsph-Dog-main/legged_gym/logs/rough_a1/Dec15_16-27-12_/model_3000.pt'
+    path = '/home/asuka/xsph-Dog-main/legged_gym/logs/TOE_dog3/Dec16_17-42-26_/model_3000.pt'
     #ppo_runner, train_cfg = task_registry.make_alg_runner(env=env, name=args.task, args=args, train_cfg=train_cfg)
     ppo_runner, train_cfg = task_registry.make_alg_runner(env=env, name=args.task, args=args, train_cfg=train_cfg,train_path=path)
     policy = ppo_runner.get_inference_policy(device=env.device)
@@ -81,10 +81,10 @@ def play(args):
     img_idx = 0
 
     for i in range(10*int(env.max_episode_length)):
-        # env.commands[:, 0] = 0.0
-        # env.commands[:, 1] = 0.0
-        # env.commands[:, 2] = 0.0
-        # env.commands[:, 3] = 1.57
+        env.commands[:, 0] = 0.0
+        env.commands[:, 1] = 0.0
+        env.commands[:, 2] = 0.0
+        env.commands[:, 3] = 1.57
         forward_out = ppo_runner.alg.linear_velocity_prediction.forward_vel_pred(obs.detach())
         #actions = policy(critic_obs.detach())
         # actions = policy(obs.detach())
@@ -94,7 +94,6 @@ def play(args):
         if i % 10 == 0:  # 每10步打印一次，避免输出过多信息
             robot_index = 0
             print(f"Step {i}:")
-            #print(f"Forward Output: {forward_out[robot_index]}")
             pred_lin_vel = forward_out[robot_index]
             print(f"  Predicted Linear Velocity - X: {pred_lin_vel[0].item():.3f}, Y: {pred_lin_vel[1].item():.3f}, Z: {pred_lin_vel[2].item():.3f}")
             print(f"  Commands - X: {env.commands[robot_index, 0].item():.3f}, Y: {env.commands[robot_index, 1].item():.3f}, Yaw: {env.commands[robot_index, 2].item():.3f},heading: {env.commands[robot_index, 3].item():.3f}")

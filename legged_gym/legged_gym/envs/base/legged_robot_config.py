@@ -72,9 +72,9 @@ class LeggedRobotCfg(BaseConfig):
         resampling_time = 10. # time before command are changed[s]
         heading_command = True # if true: compute ang vel command from heading error
         class ranges:
-            lin_vel_x = [-1.0, 1.0] # min max [m/s]
+            lin_vel_x = [-1.5, 1.5] # min max [m/s]
             lin_vel_y = [-0.5, 0.5]   # min max [m/s]
-            ang_vel_yaw = [-0.7, 0.7]    # min max [rad/s]
+            ang_vel_yaw = [-1., 1.]    # min max [rad/s]
             heading = [-3.14, 3.14]
 
     class init_state:
@@ -156,22 +156,22 @@ class LeggedRobotCfg(BaseConfig):
     class rewards:
         class scales:
             termination = -0.0
-            tracking_lin_vel = 2.
-            tracking_ang_vel = 0.4
+            tracking_lin_vel = 1.
+            tracking_ang_vel = 0.5
             lin_vel_z = -2.0
             ang_vel_xy = -0.075 #-0.07
             orientation = -1
             torques = -0.000001 
             dof_vel = -0.
             dof_acc = -2.5e-7
-            base_height = -12.
-            feet_air_time =  1.0
+            base_height = -15.
+            feet_air_time =  1.
             collision = -5.
             feet_stumble = -0.0 
             action_rate = -0.01
-            stand_still = -1. # -0.8
-            trot_gait = -0.05
-            feet_stumble = -0.2
+            stand_still = -0.7 # -0.8
+            # trot_gait = -0.03
+            # feet_stumble = -0.3
 
 
         only_positive_rewards = False # if true negative total rewards are clipped at zero (avoids early termination problems)
@@ -184,7 +184,7 @@ class LeggedRobotCfg(BaseConfig):
 
     class normalization:
         class obs_scales:
-            lin_vel = 2.0
+            lin_vel = 1.0
             ang_vel = 0.25
             dof_pos = 1.0
             dof_vel = 0.05
